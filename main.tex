@@ -1,0 +1,123 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{indentfirst}
+\usepackage{amsmath}
+\usepackage{algorithm2e}
+
+\title{Assignment-2}
+\author{Pritam Dey }
+\date{December 2019}
+
+\begin{document}
+
+\maketitle
+
+\section{Random number generator}
+
+\subsection{Algorithm}
+
+\begin{figure}[ht]
+\center
+\begin{minipage}{.8\linewidth}
+\begin{algorithm}[H]
+\SetAlgoLined
+\SetKwFunction{Rcoin}{rcoin}
+\SetKwFunction{Rhundread}{r100}
+\SetKwProg{Fn}{Function}{:}{end}
+\Fn{\Rhundread()}{
+    $n\gets101$\\
+    \While{$n \geq 100$}{
+        $n\gets0$\\
+        \For{$i\gets0$ \KwTo $6$}{
+            $n\gets n + \Rcoin() * 2^i$\\
+        }
+    }
+    \KwRet n\\
+}
+\end{algorithm}
+\end{minipage}
+\end{figure}
+
+\subsection{Correctness}
+\begin{itemize}
+\item First of all we create a binary number using the rcoin function. This is done easily by calling rcoin 7 times and placing the bits one after another. Then the binary number is converted into decimal number. This way we can get a number in the range from 0 to 127. 
+\item Probability of occurrence of each number is $(\frac{1}{2})^7$, since each of the 7 bits takes a value between 0 and 1 with equal probability independently. Hence we have generated a number in the range from 0 to 127.
+\item Now, the algorithm only returns the random numbers which are less than 100, and discards all other numbers that are greater than or equal to 100. Since truncated uniform distribution is also uniform, the algorithm thus produces random number in the range 0 to 100.
+\item The while loop in the algorithm terminates only when $n < 100$. So 
+$$P[the \;loop \;stops \;at \;i^{th} \;iteration] = \left(\frac{28}{128}\right)^{i-1} \frac{100}{128}$$
+Hence probability that the while loop will terminate before $t^{th}$ iteration is
+\begin{align*}
+&\sum_{i=1}^t P[the \;loop \;stops \;at \;i^{th} \;iteration]\\
+=&\sum_{i=1}^t \left(\frac{28}{128}\right)^{i-1} \frac{100}{128}\\
+\end{align*}
+So, the loop will terminate with probability
+\begin{align*}
+    =&\sum_{i=1}^\infty \left(\frac{28}{128}\right)^{i-1} \frac{100}{128}\\
+    =&\left(\frac{100}{128}\right) \frac{1}{1 - \frac{28}{128}}\\
+    =&1
+\end{align*}
+
+\end{itemize}
+
+\subsection{Expected number of times rcoin is invoked}
+
+let $T$ be the number of time $rcoin$ is invoked by the algorithm. Then
+
+\begin{align*}
+    E(T) &= \sum_{i=1}^t (6i)\cdot P[the \;loop \;stops \;at \;i^{th} \;iteration]\\
+    &=\sum_{i=1}^\infty (6i)\cdot\left(\frac{28}{128}\right)^{i-1} \frac{100}{128}\\
+    &=6\cdot\frac{100}{128}\sum_{i=1}^\infty i\cdot\left(\frac{28}{128}\right)^{i-1} \\
+    &=6\cdot\frac{100}{128}\cdot\frac{128}{100}\cdot\frac{128}{100}\\
+    &=6\cdot1.28\\
+    &=7.68
+\end{align*}
+
+\section{Total number of comparisons made by lomuto partitioning scheme in an ordered array}
+
+Let $A[1, 2, \dots, n] $ be a sorted array.
+\begin{itemize}
+   
+\item As the array is already sorted, the last element of the array (which is considered as the pivot) is already greater than all other elements of the array. 
+\item The partition function makes $n-1$ comparisons, and partitions the array into a sorted array of length $n-1$ and another array of length $0$.
+\item The array with length $0$ will require no comparisons, and the sorted array will be partitioned again in a similar way stated above.
+\end{itemize}
+
+So, if $T(n)$ be the total number of comparisons, then,
+
+\begin{align*}
+T(n) &= T(n-1) + n-1 \\
+     &= \sum_{i=1}^{n-1} i \\
+     &= \frac{n(n-1)}{2} \\
+     &= O(n^2)
+\end{align*}
+
+
+\section{Find order statistic by modifying the Quick Sort algorithm}
+\subsection{Algorithm}
+\begin{figure}[ht]
+\center
+\begin{minipage}{.8\linewidth}
+\begin{algorithm}[H]
+\SetAlgoLined
+\SetKwFunction{Part}{partition}
+\SetKwFunction{Ord}{order\_statistic}
+\SetKwProg{Fn}{Function}{:}{end}
+\Fn{\Ord($A$, $w$, $p$, $r$)}{
+  \If{$p$ \textless $r$}{
+    $q$ = \Part($A$, $p$, $r$) \\
+    \uIf{$q$ \textless $w$}{
+      \KwRet \Ord($A$, $w$, $q + 1$, $r$)\\
+    }\uElseIf{$q$ \textgreater $w$}{
+      \KwRet \Ord($A$, $w$, $p$, $q - 1$)\\
+    }\Else{
+    \KwRet $A[q]$\\
+    }
+  }
+}
+\end{algorithm}
+\end{minipage}
+\end{figure}
+
+Here we have used the Lomuto partition function
+
+\end{document}
