@@ -1,15 +1,24 @@
 library(lattice)
 library(microbenchmark)
 
-test_hyp <- function(N = 50000) {
+avg <- function(n, r) {
+  y = numeric(0)
+  for (i in 1:r){
+    s = runif(n)
+    w = floor(runif(1) * n) + 1
+    t = summary(microbenchmark(order_statistic(s, w), times = 1L))[["mean"]]
+    y = c(y, t)
+  }
+  mean(y)
+}
+
+test_hyp <- function(N = 20000, r=20) {
   n = seq(1000, N, by = 1000)
   nlogn = sapply(n, function (k) k*log(k))
   t = rep(0, length(n))
   j = 1
   for (i in n){
-    x = runif(i)
-    w = floor(runif(1) * i) + 1
-    t[j] = summary(microbenchmark(order_statistic(x, w), unit="ms"))[["mean"]]
+    t[j] = avg(i, r)
     print(j) #to track progress
     j=j+1
   }
