@@ -12,7 +12,7 @@ avg <- function(n, r) {
   mean(y)
 }
 
-test_hyp <- function(N = 20000, r=20) {
+test_hyp <- function(N = 5000, r=20) {
   n = seq(1000, N, by = 1000)
   t = rep(0, length(n))
   j = 1
@@ -21,6 +21,7 @@ test_hyp <- function(N = 20000, r=20) {
     print(j) #to track progress
     j=j+1
   }
+  df = data.frame(cbind(n, t))
   write.csv(df, "data.csv")
   df
 }
