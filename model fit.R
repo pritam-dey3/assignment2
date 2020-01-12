@@ -12,3 +12,9 @@ fitted_logn = predict(model_logn)
 xyplot(t_n + fitted_logn ~ n, data = df,
        type=c('p', 'l'),
        auto.key = TRUE)
+
+library(trafo)
+assumptions(model_logn)
+
+resd = model_logn$residuals
+plot(model_logn)
